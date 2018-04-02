@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>GIFTastic</title>
+  <style type="text/css">
+    button,
+    div,
+    form,
+    input {
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Animal Search</h1>
+
+    <div id="animal-view"></div>
+
+    <form id="animal-form">
+
+        <label for="animal-input">Add a New Animal</label>
+        <input type="text" id="animal-input"><br>
+
+      <input id="add-animal" type="submit" value="Add an Animal">
+      <div id="images">
+        <!-- Button triggers new movie to be added -->
+    </form>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      // Initial array of animal buttons
+      var animals = ["cats", "dogs", "parrots", "birds"];
+      renderButtons(); 
+    // for (let i = 0; i < animals.length; i++) {
+    //   var animal = $(this).attr("data-name");
+    //   var limit = 5; 
+    //   var APIkey = "uov0Zbb7htCuMJZZ791rTzwSwRuN3Ck8";
+    //   var queryURL = "http://api.giphy.com/v1/gifs/search?q="+animal+"&api_key="+APIkey+"&limit="+limit;
+
+    //   console.log(animals[i]);
+    //   $.ajax({
+    //   url: queryURL,
+    //   method: "GET"
+    // }).then(function(response) {
+    //   results=response.data; 
+    //     console.log(results);
+    // });
+    // }
+      $("button").on("click", function(event) {
+        console.log("a button was clicked")
+        event.preventDefault();
+
+      // In this case, the "this" keyword refers to the button that was clicked
+      var animal = $(this).attr("data-name");
+      var limit = 5; 
+      var APIkey = "uov0Zbb7htCuMJZZ791rTzwSwRuN3Ck8";
+      var queryURL = "http://api.giphy.com/v1/gifs/search?q="+animal+"&api_key="+APIkey+"&limit="+limit;
+
+
+      // Performing our AJAX GET request
+      $.ajax({
+          url: queryURL,
+          method: "GET"
+        })
+        // After the data comes back from the API
+        .then(function(response) {
+          // Storing an array of results in the results variable
+          var results = response.data;
+
+          // Looping over every result item
+          for (var i = 0; i < results.length; i++) {
+            
+              var imageUrl =results[i].images.fixed_height.url;
+              var animalImage = $("<img>");
+
+              // adds attributes to the image to set the source of the image and alt
+              animalImage.attr("src", imageUrl);
+              animalImage.attr("alt", "animal image");
+              $("#images").prepend(animalImage);
+              console.log(animalImage)
+            }
+        
+          });
+          });
+
+      $("#add-animal").on("click", function(event) {
+        event.preventDefault();
+        var limit = 5; 
+        var animal = $("#animal-input").val().trim();
+        var APIkey = "uov0Zbb7htCuMJZZ791rTzwSwRuN3Ck8";
+        var queryURL = "http://api.giphy.com/v1/gifs/search?q="+animal+"&api_key="+APIkey+"&limit="+limit;
+        animals.push(animal);
+        renderButtons(); 
+        console.log(queryURL);
+      });
+
+
+        function GIFanimals(){
+        $.ajax({
+           url: queryURL,
+           method: "GET"
+         }).then(function(response) {
+              console.log(response.data);
+
+              var results = response.data; 
+              // var imageUrl = response.data.image_original_url;
+              // console.log(imageUrl); 
+          for (var i = 0; i < results.length; i++) {
+            console.log (results[i].url); 
+              
+              var imageUrl =results[i].images.fixed_height.url;
+              console.log(imageUrl); 
+              var animalImage = $("<img>");
+
+              // adds attributes to the image to set the source of the image and alt
+              animalImage.attr("src", imageUrl);
+              animalImage.attr("alt", "animal image");
+              $("#images").prepend(animalImage);
+          }     
+       });
+      }
+  
+
+      function renderButtons() {
+        $("#animal-view").empty(); 
+        // Delete the content inside the animal-view div prior to adding new movies
+        var limit = 5; 
+          var animal = animals[0]
+          var APIkey = "uov0Zbb7htCuMJZZ791rTzwSwRuN3Ck8";
+          var queryURL = "http://api.giphy.com/v1/gifs/search?q="+animal+"&api_key="+APIkey+"&limit="+limit;
+
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).then(function(response) {
+          var results=response.data; 
+          console.log("query results giphy"+results);
+      });
+        for (let i = 0; i < animals.length; i++) {
+  
+      var a = $("<button>");
+      a.addClass("animal-gif");
+      a.attr("data-name", animals[i]);
+      a.text(animals[i]);
+      $("#animal-view").prepend(a); 
+        }
+      }
+
+
+    </script>
+  </div>
+</body>
+
+</html>
